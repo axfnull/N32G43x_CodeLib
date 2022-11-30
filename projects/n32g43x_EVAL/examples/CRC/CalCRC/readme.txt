@@ -7,11 +7,11 @@
 
 2、使用环境
 
-	软件开发环境：
+    软件开发环境：
         IDE工具：KEIL MDK-ARM 5.26
     
     硬件环境：
-        开发板 N32L43XM-STB
+        开发板 N32G43XRL-STB V1.0
 
 
 3、使用说明
@@ -21,3 +21,25 @@
 
 4、注意事项
     无
+
+
+1. Function description
+    This example demonstrates the basic functions and algorithms of hardware CRC.
+    Among them are 16bit parity and 32bit parity,
+    
+
+2. Use environment
+    Software development environment:
+        IDE tool: KEIL MDK-ARM 5.26
+    
+    Hardware environment:
+        Development board N32G43XRL-STB V1.0
+
+
+3. Instructions for use
+
+     1. Clock source: HSE+PLL
+     2. Main clock: 108MHz
+
+4. Matters needing attention
+     None

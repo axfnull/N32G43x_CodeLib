@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file main.c
  * @author Nations 
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include "n32g43x.h"
 #include "n32g43x_conf.h"
@@ -113,7 +113,7 @@ int main(void)
     {
        /* Toggle LED3 */
        LEDBlink(LED3_PORT, LED3_PIN);
-       Delay(50);
+       Delay(60);
        /* Update WWDG counter */
        WWDG_SetCnt(127);
     }

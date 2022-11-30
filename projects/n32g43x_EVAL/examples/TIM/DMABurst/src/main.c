@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file main.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include "main.h"
 
@@ -87,19 +87,7 @@ int main(void)
     DMA_RequestRemap(DMA_REMAP_TIM1_UP,DMA,DMA_CH5,ENABLE);
 
     /* Time base configuration */
-    /* -----------------------------------------------------------------------
-    TIM1 Configuration: generate 1 PWM signal using the DMA burst mode:
-    The TIM1CLK frequency is set to SystemCoreClock (Hz), to get TIM1 counter
-    clock at 24 MHz the Prescaler is computed as following:
-     - Prescaler = (TIM1CLK / TIM1 counter clock) - 1
-    SystemCoreClock is set to 72 MHz for Low-density, Medium-density, High-density
-    and Connectivity line devices and to 24 MHz for Low-Density Value line and
-    Medium-Density Value line devices
-
-    The TIM1 period is 5.8 KHz: TIM1 Frequency = TIM1 counter clock/(AR + 1)
-                                               = 24 MHz / 4096 = 5.8KHz KHz
-    TIM1 Channel1 duty cycle = (TIM1_CCR1/ TIM1_ARR)* 100 = 33.33%
-    ----------------------------------------------------------------------- */
+ 
     TIM_TimeBaseStructure.Period    = 0xFFFF;
     TIM_TimeBaseStructure.Prescaler = (uint16_t)(SystemCoreClock / 24000000) - 1;
     TIM_TimeBaseStructure.ClkDiv    = 0x0;

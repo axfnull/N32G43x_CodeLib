@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,12 +28,11 @@
 /**
  * @file drv_adc.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include "drv_adc.h"
-#include "rt_config.h"
 #include "n32g43x.h"
 #include "drv_gpio.h"
 
@@ -67,10 +66,10 @@ static void n32g43x_adc_init(struct n32g43x_adc_config *config)
     /* Check ADC Ready */
     while(ADC_GetFlagStatusNew((ADC_Module*)config->adc_periph, ADC_FLAG_RDY) == RESET)
         ;
-    /* Start ADC1 calibration */
+    /* Start ADC calibration */
     ADC_StartCalibration((ADC_Module*)config->adc_periph);
-    while(ADC_GetFlagStatusNew((ADC_Module*)config->adc_periph, ADC_FLAG_PD_RDY))
-        ;
+    /* Check the end of ADC calibration */
+    while (ADC_GetCalibrationStatus((ADC_Module*)config->adc_periph));
 }
 
 static rt_err_t n32g43x_adc_enabled(struct rt_adc_device *device, rt_uint32_t channel, rt_bool_t enabled)
@@ -95,13 +94,14 @@ static rt_err_t n32g43x_adc_convert(struct rt_adc_device *device, rt_uint32_t ch
     
     ADC_ConfigRegularChannel((ADC_Module*)config->adc_periph, channel, 1, ADC_SAMP_TIME_239CYCLES5);
     
+    /* Start ADC Software Conversion */
     ADC_EnableSoftwareStartConv((ADC_Module*)config->adc_periph, ENABLE);
 
-    while(ADC_GetFlagStatus((ADC_Module*)config->adc_periph,ADC_FLAG_ENDC)==0)
+    while(ADC_GetFlagStatus((ADC_Module*)config->adc_periph, ADC_FLAG_ENDC) == 0)
     {
     }
-    ADC_ClearFlag((ADC_Module*)config->adc_periph,ADC_FLAG_ENDC);
-    ADC_ClearFlag((ADC_Module*)config->adc_periph,ADC_FLAG_STR);
+    ADC_ClearFlag((ADC_Module*)config->adc_periph, ADC_FLAG_ENDC);
+    ADC_ClearFlag((ADC_Module*)config->adc_periph, ADC_FLAG_STR);
     *value=ADC_GetDat((ADC_Module*)config->adc_periph);
     
     return RT_EOK;
@@ -121,12 +121,12 @@ int rt_hw_adc_init(void)
 #if defined(RT_USING_ADC)
     RCC_EnableAHBPeriphClk(RCC_AHB_PERIPH_ADC, ENABLE);
     /* Configure PC.00 PC.01 as analog input -------------------------*/
-    GPIOInit(GPIOC, GPIO_Mode_Analog, GPIO_No_Pull, GPIO_PIN_0 | GPIO_PIN_1, GPIO_NO_AF);
+	GPIOInit(GPIOC, GPIO_Mode_Analog, GPIO_No_Pull, GPIO_PIN_0 | GPIO_PIN_1, GPIO_NO_AF);
 #endif /* RT_USING_ADC */
-        
+    
     /* RCC_ADCHCLK_DIV16*/
     ADC_ConfigClk(ADC_CTRL3_CKMOD_AHB, RCC_ADCHCLK_DIV16);
-    RCC_ConfigAdc1mClk(RCC_ADC1MCLK_SRC_HSE, RCC_ADC1MCLK_DIV8);  //selsect HSE as RCC ADC1M CLK Source
+	RCC_ConfigAdc1mClk(RCC_ADC1MCLK_SRC_HSE, RCC_ADC1MCLK_DIV8);  //selsect HSE as RCC ADC1M CLK Source
     
     for (i = 0; i < sizeof(adc_obj) / sizeof(adc_obj[0]); i++)
     {
@@ -136,7 +136,6 @@ int rt_hw_adc_init(void)
                            adc_obj[i].config->name, &n32g43x_adc_ops, adc_obj[i].config);
     }
     return result;
-
 }
 
 INIT_DEVICE_EXPORT(rt_hw_adc_init);

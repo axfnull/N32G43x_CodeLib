@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file main.c
  * @author Nations
- * @version v1.0.1
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include "main.h"
 
@@ -54,12 +54,6 @@ void WritePuls(void);
 void TIM_Initial(TIM_Module* TIMx)
 {
     /* TIMx Configuration ---------------------------------------------------
-    Generate 7 PWM signals with 4 different duty cycles:
-    TIM1CLK = SystemCoreClock, Prescaler = 0, TIM1 counter clock = SystemCoreClock
-    SystemCoreClock is set to 72 MHz for Low-density, Medium-density, High-density
-    and Connectivity line devices and to 24 MHz for Low-Density Value line and
-    Medium-Density Value line devices
-
     The objective is to generate 7 PWM signal at 17.57 KHz:
      - TIMx_Period = (SystemCoreClock / 17570) - 1
     The channel 1 and channel 1N duty cycle is set to 50%

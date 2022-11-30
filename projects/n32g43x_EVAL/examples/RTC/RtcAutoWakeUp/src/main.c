@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file main.c
  * @author Nations 
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include <stdio.h>
 #include <stdint.h>
@@ -78,14 +78,14 @@ int main(void)
     /* RTC clock source select */
     RTC_CLKSourceConfig(RTC_CLK_SRC_TYPE_LSE, true, true);
     RTC_PrescalerConfig();
-    log_info("\r\n RTC configured....\r\n");
+//    log_info("\r\n RTC configured....\r\n");
     /* Adjust time by values entered by the user on the hyperterminal */
     RTC_DateRegulate();
     RTC_TimeRegulate();
     /* wake up clock select */
     RTC_ConfigWakeUpClock(RTC_WKUPCLK_CK_SPRE_16BITS);
     /* wake up timer value */
-    RTC_SetWakeUpCounter(4);
+    RTC_SetWakeUpCounter(2);
 #if (RTC_ALARM_TEST_TYPE   ==  RTC_ALARM_TEST_TYPE_IRQ) // 1.WakeUp interrupt test
     EXTI20_RTCWKUP_Configuration(ENABLE);
     /* Enable the RTC Wakeup Interrupt */
@@ -94,15 +94,18 @@ int main(void)
     DBG_ConfigPeriph(DBG_STOP, ENABLE);
     while (1)
     {
-        /* Insert a long delay */
-        delay(20);
-        /* Request to enter STOP2 mode*/
-        PWR_EnterSTOP2Mode(PWR_STOPENTRY_WFI,PWR_CTRL3_RAM1RET|PWR_CTRL3_RAM2RET); 
-        /* Insert a long delay */
-        delay(20);
-        log_info("\r\n Stop2 Wakeup From RTC \r\n");
-        RTC_TimeShow();
-        LEDBlink(LED1_PORT,LED1_PIN);
+//        /* Insert a long delay */
+//        delay(20);
+//        /* Request to enter STOP2 mode*/
+//        PWR_EnterSTOP2Mode(PWR_STOPENTRY_WFI,PWR_CTRL3_RAM1RET|PWR_CTRL3_RAM2RET); 
+//        /* Insert a long delay */
+//        delay(20);
+//        log_info("\r\n Stop2 Wakeup From RTC \r\n");
+//        RTC_TimeShow();
+//        LEDBlink(LED1_PORT,LED1_PIN);
+        
+        PWR_EnterSTOP2Mode(PWR_STOPENTRY_WFE, PWR_CTRL3_RAM1RET);
+        NVIC_SystemReset();
     }
 #elif(RTC_ALARM_TEST_TYPE   ==  RTC_ALARM_TEST_TYPE_OUTPUT) // 2.WakeUp output test
     /* Set the output type (open-drain output + push-pull output).

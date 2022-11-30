@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file drv_can.h
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
  
 #ifndef __DRV_CAN_H__
@@ -45,22 +45,17 @@
 #define CAN_BAUDRATE_500K ((uint32_t)500)
 #define CAN_BAUDRATE_250K ((uint32_t)250)
 #define CAN_BAUDRATE_125K ((uint32_t)125)
-#define CAN_BAUDRATE_100K ((uint32_t)100)
-#define CAN_BAUDRATE_50K  ((uint32_t)50)
-#define CAN_BAUDRATE_20K  ((uint32_t)20)
-#define CAN_BAUDRATE_10K  ((uint32_t)10)
 #define CAN_BTR_CALCULATE ((uint32_t)4500)
 
 #define CAN_TX_MAILBOX0             (0x00000001U)  /*!< Tx Mailbox 0  */
 #define CAN_TX_MAILBOX1             (0x00000002U)  /*!< Tx Mailbox 1  */
 #define CAN_TX_MAILBOX2             (0x00000004U)  /*!< Tx Mailbox 2  */
 
-
 #define CAN_FILTERNUM0 ((uint8_t)0)
 
-#define CAN_GPIO_PORT           GPIOA
-#define CAN_GPIO_RX_PIN         GPIO_PIN_11
-#define CAN_GPIO_TX_PIN         GPIO_PIN_12
+#define CAN_GPIO_PORT           GPIOB
+#define CAN_GPIO_RX_PIN         GPIO_PIN_8
+#define CAN_GPIO_TX_PIN         GPIO_PIN_9
 
 /* attention !!! baud calculation example: Tclk / ((ss + bs1 + bs2) * brp)  36 / ((1 + 8 + 3) * 3) = 1MHz*/
 

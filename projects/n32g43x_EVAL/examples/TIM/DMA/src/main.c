@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file main.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include "main.h"
 
@@ -63,22 +63,6 @@ int main(void)
     /* DMA Configuration */
     DMA_Configuration();
 
-    /* TIM1 DMA Transfer example -------------------------------------------------
-    TIM1CLK = SystemCoreClock, Prescaler = 0, TIM1 counter clock = SystemCoreClock
-    SystemCoreClock is set to 72 MHz for Low-density, Medium-density, High-density
-    and Connectivity line devices and to 24 MHz for Low-Density Value line and
-    Medium-Density Value line devices.
-
-    The objective is to configure TIM1 channel 3 to generate complementary PWM
-    signal with a frequency equal to 17.57 KHz:
-     - TIM1_Period = (SystemCoreClock / 17570) - 1
-    and a variable duty cycle that is changed by the DMA after a specific number of
-    Update DMA request.
-
-    The number of this repetitive requests is defined by the TIM1 Repetition counter,
-    each 3 Update Requests, the TIM1 Channel 3 Duty Cycle changes to the next new
-    value defined by the SRC_Buffer .
-    -----------------------------------------------------------------------------*/
     /* Compute the value to be set in AR register to generate signal frequency at 17.57 Khz */
     TimerPeriod = (SystemCoreClock / 17570) - 1;
     /* Compute CCDAT1 value to generate a duty cycle at 50% */

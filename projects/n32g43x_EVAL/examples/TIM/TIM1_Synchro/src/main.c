@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file main.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include "main.h"
 
@@ -55,39 +55,6 @@ int main(void)
 
     /* GPIO Configuration */
     GPIO_Configuration();
-
-    /* TIM1 and Timers(TIM3 and TIM4) synchronisation in parallel mode -----------
-     1/TIM1 is configured as Master Timer:
-     - PWM Mode is used
-     - The TIM1 Update event is used as Trigger Output
-
-     2/TIM3 and TIM4 are slaves for TIM1,
-     - PWM Mode is used
-     - The ITR0(TIM1) is used as input trigger for both slaves
-     - Gated mode is used, so starts and stops of slaves counters
-       are controlled by the Master trigger output signal(update event).
-
-    o For Low-density, Medium-density, High-density and Connectivity line devices:
-    The TIMxCLK is fixed to 72 MHz, Prescaler = 0 so the TIM1 counter clock is 72 MHz.
-
-    The Master Timer TIM1 is running at:
-    TIM1 frequency = TIM1 counter clock / (TIM1_Period + 1) = 281.250 KHz
-    and the duty cycle is equal to: TIM1_CCR1/(TIM1_ARR + 1) = 50%
-
-    The TIM3 is running at:
-    (TIM1 frequency)/ ((TIM3 period +1)* (Repetition_Counter+1)) = 18.750 KHz and
-    a duty cycle equal to TIM3_CCR1/(TIM3_ARR + 1) = 33.3%
-
-    The TIM4 is running at:
-    (TIM1 frequency)/ ((TIM4 period +1)* (Repetition_Counter+1)) = 28.125 KHz and
-    a duty cycle equal to TIM4_CCR1/(TIM4_ARR + 1) = 50%
-
-    o For Low-Density Value line and Medium-Density Value line devices:
-    The TIMxCLK is fixed to 24 MHz, Prescaler = 0 so the TIM1 counter clock is 24 MHz.
-    TIM1 frequency = 93.75 KHz
-    TIM3 frequency = 6.25 KHz
-    TIM4 frequency = 9.375 KHz
-    --------------------------------------------------------------------------- */
 
     /* TIM3 Peripheral Configuration ----------------------------------------*/
     /* TIM3 Slave Configuration: PWM1 Mode */

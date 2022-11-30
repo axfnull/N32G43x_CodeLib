@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file n32g43x_rcc.h
  * @author Nations 
- * @version v1.0.4
+ * @version V1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #ifndef __N32G43X_RCC_H__
 #define __N32G43X_RCC_H__
@@ -869,7 +869,7 @@ void RCC_ConfigSRAMParityErrorInt(uint32_t SramInt, FunctionalState Cmd);
 void RCC_ConfigSRAMParityErrorRESET(uint32_t SramReset, FunctionalState Cmd);
 void RCC_ClrSRAMParityErrorFlag(uint32_t SramErrorflag);
 
-void RCC_ConfigLse(uint8_t RCC_LSE);
+void RCC_ConfigLse(uint8_t RCC_LSE,uint16_t LSE_Trim);
 void RCC_EnableLsi(FunctionalState Cmd);
 void RCC_ConfigRtcClk(uint32_t RCC_RTCCLKSource);
 void RCC_EnableRtcClk(FunctionalState Cmd);

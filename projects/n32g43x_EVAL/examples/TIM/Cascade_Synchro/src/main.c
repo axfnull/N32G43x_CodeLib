@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file main.c
  * @author Nations
- * @version v1.0.1
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include "main.h"
 
@@ -54,46 +54,6 @@ int main(void)
 
     /* GPIO Configuration */
     GPIO_Configuration();
-
-    /* Timers synchronisation in cascade mode ----------------------------
-     1/TIM2 is configured as Master Timer:
-     - PWM Mode is used
-     - The TIM2 Update event is used as Trigger Output
-
-     2/TIM3 is slave for TIM2 and Master for TIM4,
-     - PWM Mode is used
-     - The ITR1(TIM2) is used as input trigger
-     - Gated mode is used, so start and stop of slave counter
-      are controlled by the Master trigger output signal(TIM2 update event).
-      - The TIM3 Update event is used as Trigger Output.
-
-      3/TIM4 is slave for TIM3,
-     - PWM Mode is used
-     - The ITR2(TIM3) is used as input trigger
-     - Gated mode is used, so start and stop of slave counter
-      are controlled by the Master trigger output signal(TIM3 update event).
-
-     * For Low-density, Medium-density, High-density and Connectivity line devices:
-       The TIMxCLK is fixed to 72 MHz, the TIM2 counter clock is 72 MHz.
-
-       The Master Timer TIM2 is running at TIM2 frequency :
-       TIM2 frequency = (TIM2 counter clock)/ (TIM2 period + 1) = 281.250 KHz
-       and the duty cycle = TIM2_CCR1/(TIM2_ARR + 1) = 25%.
-
-       The TIM3 is running:
-       - At (TIM2 frequency)/ (TIM3 period + 1) = 70.312 KHz and a duty cycle
-         equal to TIM3_CCR1/(TIM3_ARR + 1) = 25%
-
-        The TIM4 is running:
-      - At (TIM3 frequency)/ (TIM4 period + 1) = 17.578 KHz and a duty cycle
-        equal to TIM4_CCR1/(TIM4_ARR + 1) = 25%
-
-     * For Low-Density Value line,Medium-Density and High-Density Value line devices:
-       The TIMxCLK is fixed to 24 MHz, the TIM2 counter clock is 24 MHz.
-       So TIM2 frequency = 93.750 KHz,
-       TIM3 is running at 23.437 KHz,
-       and TIM4 is running at 5.85 KHz
-    -------------------------------------------------------------------- */
 
     /* Time base configuration */
     TIM_TimeBaseStructure.Period    = 255;

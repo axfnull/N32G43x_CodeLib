@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file main.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include "main.h"
 
@@ -57,33 +57,6 @@ int main(void)
 
     /* GPIO Configuration */
     GPIO_Configuration();
-
-    /* -----------------------------------------------------------------------
-    TIM1 Configuration to:
-
-    1/ Generate 3 complementary PWM signals with 3 different duty cycles:
-    TIM1CLK is fixed to SystemCoreClock, the TIM1 Prescaler is equal to 0 so the
-    TIM1 counter clock used is SystemCoreClock.
-    * SystemCoreClock is set to 72 MHz for Low-density, Medium-density, High-density
-    and Connectivity line devices. For Low-Density Value line and Medium-Density
-    Value line devices, SystemCoreClock is set to 24 MHz.
-
-    The objective is to generate PWM signal at 17.57 KHz:
-    - TIM1_Period = (SystemCoreClock / 17570) - 1
-
-    The Three Duty cycles are computed as the following description:
-
-    The channel 1 duty cycle is set to 50% so channel 1N is set to 50%.
-    The channel 2 duty cycle is set to 25% so channel 2N is set to 75%.
-    The channel 3 duty cycle is set to 12.5% so channel 3N is set to 87.5%.
-    The Timer pulse is calculated as follows:
-      - ChannelxPulse = DutyCycle * (TIM1_Period - 1) / 100
-
-    2/ Insert a dead time equal to 11/SystemCoreClock ns
-    3/ Configure the break feature, active at High level, and using the automatic
-     output enable feature
-    4/ Use the Locking parameters level1.
-    ----------------------------------------------------------------------- */
 
     /* Compute the value to be set in AR register to generate signal frequency at 17.57 Khz */
     TimerPeriod = (SystemCoreClock / 17570) - 1;

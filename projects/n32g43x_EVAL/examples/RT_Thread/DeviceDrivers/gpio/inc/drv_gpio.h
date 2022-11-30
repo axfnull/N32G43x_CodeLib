@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,14 +28,13 @@
 /**
  * @file drv_gpio.h
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #ifndef __DRV_GPIO_H__
 #define __DRV_GPIO_H__
 
-#include <drv_common.h>
 #include "n32g43x.h"
 
 #define __N32G43X_PORT(port)  GPIO##port##_BASE
@@ -57,12 +56,12 @@ struct pin_index
 {
     int index;
     GPIO_Module *gpio; 
-    rt_uint32_t pin;
+    uint32_t pin;
 };
 
 struct pin_irq_map
 {
-    rt_uint16_t pinbit;
+    uint16_t pinbit;
     IRQn_Type irqno;
 };
 

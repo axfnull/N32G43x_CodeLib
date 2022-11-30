@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,16 +28,15 @@
 /**
  * @file main.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include "n32g43x.h"
 #include "hw_config.h"
 #include "usb_lib.h"
 #include "usb_pwr.h"
 #include "n32g43x_flash.h"
-#include "bsp_usart.h"
 
 __IO uint8_t PrevXferComplete = 1;
 __IO uint32_t TimingDelay     = 0;
@@ -58,19 +57,13 @@ int main(void)
 {
     Cfg_KeyIO();
     Set_System();
-    USART_Config();
-    printf("USB HID Debug\r\n");
-    printf("RCC->CFG=%x\r\n", RCC->CFG);
-    printf("RCC->CTRL=%x\r\n", RCC->CTRL);
     if(USB_Config(SYSCLK_VALUE_96MHz) == SUCCESS)
     {
-        printf("RCC->CFG=%x\r\n", RCC->CFG);
         USB_Init();
 
         while (bDeviceState != CONFIGURED)
         {
         }
-
         while (1)
         {
             if (PrevXferComplete)

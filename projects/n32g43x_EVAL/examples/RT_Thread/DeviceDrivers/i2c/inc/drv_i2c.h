@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,25 +28,31 @@
 /**
  * @file drv_i2c.h
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 
 #ifndef __DRV_I2C__
 #define __DRV_I2C__
 
-#include <drv_common.h>
 #include "i2c.h"
 
+/* hardware I2C1  define*/
+#define I2C1_SCL_GPIO_PORT   GPIOB
+#define I2C1_SCL_PIN         GPIO_PIN_8
+#define I2C1_SCL_AF          GPIO_AF4_I2C1
+#define I2C1_SDA_GPIO_PORT   GPIOB
+#define I2C1_SDA_PIN         GPIO_PIN_9
+#define I2C1_SDA_AF          GPIO_AF4_I2C1
 
-#define I2C1_SCL_PIN        GPIO_PIN_8
-#define I2C1_SDA_PIN        GPIO_PIN_9
-#define I2C1_GPIO_PORT      GPIOB
-
-#define I2C2_SCL_PIN        GPIO_PIN_10
-#define I2C2_SDA_PIN        GPIO_PIN_11
-#define I2C2_GPIO_PORT      GPIOB
+/* hardware I2C2  define*/
+#define I2C2_SCL_GPIO_PORT   GPIOB
+#define I2C2_SCL_PIN         GPIO_PIN_10
+#define I2C2_SCL_AF          GPIO_AF6_I2C2
+#define I2C2_SDA_GPIO_PORT   GPIOB
+#define I2C2_SDA_PIN         GPIO_PIN_11
+#define I2C2_SDA_AF          GPIO_AF6_I2C2
 
 struct rt_i2c_bus
 {

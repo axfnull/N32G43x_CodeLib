@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file usb_pwr.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 #include "usb_lib.h"
 #include "usb_conf.h"
@@ -98,9 +98,14 @@ void Suspend(void)
 {
     uint32_t i = 0;
     uint16_t wCNTR;
-        
+    
     /* suspend preparation */
     /* ... */
+
+#if (XTALLESS == 1)
+    RCC->APB1PRST |= RCC_APB1PRST_UCDRRST;
+    RCC->APB1PRST &= ~RCC_APB1PRST_UCDRRST;
+#endif
 
     /*Store CTRL value */
     wCNTR = _GetCNTR();

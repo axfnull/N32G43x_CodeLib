@@ -12,8 +12,8 @@
 3、使用说明
 	
 	/* 描述相关模块配置方法；例如:时钟，I/O等 */
-	SystemClock：108MHz
-	GPIO：PA8 选择作为读取电平端口，PA9、PA10 控制 LED(D2、D3) 闪烁
+	1、SystemClock：108MHz
+	2、GPIO：PA8 选择作为读取电平端口，PA9、PA10 控制 LED(D2、D3) 闪烁
 
 
 	/* 描述Demo的测试步骤和现象 */
@@ -23,3 +23,33 @@
 
 4、注意事项
 	当检测到 PA8 口为低电平时，关闭 JTAG，PA8 口为高电平时，开启 JTAG
+	
+	
+	
+	
+1. Function description
+
+	1. This example shows the high and low levels of the read port and controls the flashing of the LEDs (D2, D3)
+	
+	2. Control IO port level flip
+
+
+2. Use environment
+
+	/* Hardware environment: the development hardware platform corresponding to the project */
+	Development board: NS3602_LQFP100_V0.1
+
+3. Instructions for use
+
+	/* Describe related module configuration methods; for example: clock, I/O, etc. */
+	SystemClock: 108MHz
+	GPIO: PA8 is selected as the read level port, PA9, PA10 control LED (D2, D3) to flash
+
+
+	/* Describe the test steps and phenomena of the Demo */
+	1. After compiling, download the program to reset and run;
+	2. Check the level of the PA8 port, if it is a low level, the LED (D2) is always on, connect PA8 to 3.3V, and the LED (D3) is always on;
+
+
+4. Matters needing attention
+	When it is detected that the PA8 port is at a low level, close JTAG, and when the PA8 port is at a high level, open the JTAG.

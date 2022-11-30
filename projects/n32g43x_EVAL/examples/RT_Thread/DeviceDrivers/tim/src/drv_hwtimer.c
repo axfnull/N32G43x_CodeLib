@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,13 +28,12 @@
 /**
  * @file drv_hwtimer.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 
 #include "drv_hwtimer.h"
-#include "rt_config.h"
 #include "n32g43x_rcc.h"
 
 #ifdef RT_USING_HWTIMER
@@ -352,7 +351,7 @@ static const struct rt_hwtimer_ops n32g43x_hwtimer_ops =
 
 static const struct rt_hwtimer_info n32g43x_hwtimer_info =
 {
-    1000000,           /* the maximum count frequency can be set */
+    1000000,            /* the maximum count frequency can be set */
     2000,               /* the minimum count frequency can be set */
     0xFFFF,
     HWTIMER_CNTMODE_UP,
@@ -372,8 +371,6 @@ void TIM_IRQHandler(TIM_Module* timer_periph)
     {
       {
         TIM_ClrIntPendingBit(timer_periph, TIM_INT_CC1);
-//        htim->Channel = HAL_TIM_ACTIVE_CHANNEL_1;       
-//        htim->Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
       }
     }
   }
@@ -383,8 +380,6 @@ void TIM_IRQHandler(TIM_Module* timer_periph)
     if(TIM_GetIntStatus(timer_periph, TIM_INT_CC2) !=RESET)
     {
       TIM_ClrIntPendingBit(timer_periph, TIM_INT_CC2);
-//      htim->Channel = HAL_TIM_ACTIVE_CHANNEL_2;     
-//      htim->Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
     }
   }
   /* Capture compare 3 event */
@@ -393,8 +388,6 @@ void TIM_IRQHandler(TIM_Module* timer_periph)
     if(TIM_GetIntStatus(timer_periph, TIM_INT_CC3) !=RESET)
     {
       TIM_ClrIntPendingBit(timer_periph, TIM_INT_CC3);
-//      htim->Channel = HAL_TIM_ACTIVE_CHANNEL_3;     
-//      htim->Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
     }
   }
   /* Capture compare 4 event */
@@ -403,8 +396,6 @@ void TIM_IRQHandler(TIM_Module* timer_periph)
     if(TIM_GetIntStatus(timer_periph, TIM_INT_CC4) !=RESET)
     {
       TIM_ClrIntPendingBit(timer_periph, TIM_INT_CC4);
-//      htim->Channel = HAL_TIM_ACTIVE_CHANNEL_4;      
-//      htim->Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
     }
   }
   /* TIM Update event */
@@ -601,6 +592,7 @@ int rt_hwtimer_init(void)
 #ifdef RT_USING_HWTIMER9
     RCC_EnableAPB1PeriphClk(RCC_APB1_PERIPH_TIM9, ENABLE);
 #endif
+
     caculate_tim_count();
     for (i = 0; i < sizeof(hwtimer_obj) / sizeof(hwtimer_obj[0]); i++)
     {

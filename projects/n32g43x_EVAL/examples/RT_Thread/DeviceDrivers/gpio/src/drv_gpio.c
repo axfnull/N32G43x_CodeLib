@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,13 +28,13 @@
 /**
  * @file drv_gpio.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 
 #include "drv_gpio.h"
-#include "rt_config.h"
+#include "rthw.h"
 #include "pin.h"
 #include "n32g43x_gpio.h"
 
@@ -233,19 +233,19 @@ static void N32G43X_pin_mode(rt_device_t dev, rt_base_t pin, rt_base_t mode)
     else if (mode == PIN_MODE_INPUT)
     {
         /* input setting: not pull. */
-        GPIO_InitStructure.GPIO_Pull    = GPIO_No_Pull;
+        GPIO_InitStructure.GPIO_Pull = GPIO_No_Pull;
         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Input;        
     }
     else if (mode == PIN_MODE_INPUT_PULLUP)
     {
         /* input setting: pull up. */
-        GPIO_InitStructure.GPIO_Pull    = GPIO_Pull_Up;
+        GPIO_InitStructure.GPIO_Pull = GPIO_Pull_Up;
         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Input;  
     }
     else if (mode == PIN_MODE_INPUT_PULLDOWN)
     {
         /* input setting: pull down. */
-        GPIO_InitStructure.GPIO_Pull    = GPIO_Pull_Down;
+        GPIO_InitStructure.GPIO_Pull = GPIO_Pull_Down;
         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Input;  
     }
     else if (mode == PIN_MODE_OUTPUT_OD)
@@ -287,12 +287,13 @@ rt_inline rt_int32_t port2portsource(GPIO_Module* module)
     else if(module == GPIOD)
     {
         return GPIOD_PORT_SOURCE;
-    }
-    else
+    }       
+		else
     {
         return GPIOA_PORT_SOURCE;
-    }        
+    }
 }
+
 
 rt_inline const struct pin_irq_map *get_pin_irq_map(uint32_t pinbit)
 {
@@ -384,8 +385,7 @@ static rt_err_t N32G43X_pin_irq_enable(struct rt_device *device, rt_base_t pin,
     const struct pin_irq_map *irqmap;
     rt_base_t level;
     rt_int32_t irqindex = -1;
-    GPIO_InitType GPIO_InitStruct;
-    EXTI_InitType EXTI_InitStruct;
+    EXTI_InitType EXTI_InitStructure;
 
     index = get_pin(pin);
     if (index == RT_NULL)
@@ -410,41 +410,34 @@ static rt_err_t N32G43X_pin_irq_enable(struct rt_device *device, rt_base_t pin,
         }
 
         irqmap = &pin_irq_map[irqindex];
-
-        /* Configure GPIO_InitStructure */
-        GPIO_InitStruct.Pin = index->pin;        
+  
+				
         switch (pin_irq_hdr_tab[irqindex].mode)
         {
             case PIN_IRQ_MODE_RISING:
-                GPIO_InitStruct.GPIO_Pull  = GPIO_Pull_Down;
-                GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Input;
-                EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising;
+                EXTI_InitStructure.EXTI_Trigger  = EXTI_Trigger_Rising;
                 break;
+			
             case PIN_IRQ_MODE_FALLING:
-                GPIO_InitStruct.GPIO_Pull  = GPIO_Pull_Up;
-                GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Input;
-                EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Falling;
+                EXTI_InitStructure.EXTI_Trigger  = EXTI_Trigger_Falling;
                 break;
+			
             case PIN_IRQ_MODE_RISING_FALLING:
-                GPIO_InitStruct.GPIO_Pull  = GPIO_No_Pull;
-                GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Input;
-                EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+                EXTI_InitStructure.EXTI_Trigger  = EXTI_Trigger_Rising_Falling;
                 break;
             default:
                 break;
         }
-        GPIO_InitPeripheral(index->gpio, &GPIO_InitStruct);
-
         RCC_EnableAPB2PeriphClk(RCC_APB2_PERIPH_AFIO, ENABLE);
 
         /* configure EXTI line */
         GPIO_ConfigEXTILine(port2portsource(index->gpio), irqindex);
      
         /*Configure key EXTI line*/
-        EXTI_InitStruct.EXTI_Line    = index->pin;
-        EXTI_InitStruct.EXTI_Mode    = EXTI_Mode_Interrupt;
-        EXTI_InitStruct.EXTI_LineCmd = ENABLE;
-        EXTI_InitPeripheral(&EXTI_InitStruct);
+        EXTI_InitStructure.EXTI_Line    = index->pin;
+        EXTI_InitStructure.EXTI_Mode    = EXTI_Mode_Interrupt;
+        EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+        EXTI_InitPeripheral(&EXTI_InitStructure);
         
         EXTI_ClrITPendBit(index->pin);
         
@@ -526,6 +519,8 @@ int rt_hw_pin_init(void)
     return rt_device_pin_register("pin", &_N32G43X_pin_ops, RT_NULL);
 }
 
+INIT_BOARD_EXPORT(rt_hw_pin_init);
+
 rt_inline void pin_irq_hdr(int irqno)
 {
     if (pin_irq_hdr_tab[irqno].hdr)
@@ -542,36 +537,42 @@ void N32G43X_GPIO_EXTI_IRQHandler(rt_int8_t exti_line)
         EXTI_ClrITPendBit(1 << exti_line);
     } 
 }
+
 void EXTI0_IRQHandler(void)
 {
     rt_interrupt_enter();
     N32G43X_GPIO_EXTI_IRQHandler(0);
     rt_interrupt_leave();
 }
+
 void EXTI1_IRQHandler(void)
 {
     rt_interrupt_enter();
     N32G43X_GPIO_EXTI_IRQHandler(1);
     rt_interrupt_leave();
 }
+
 void EXTI2_IRQHandler(void)
 {
     rt_interrupt_enter();
     N32G43X_GPIO_EXTI_IRQHandler(2);
     rt_interrupt_leave();
 }
+
 void EXTI3_IRQHandler(void)
 {
     rt_interrupt_enter();
     N32G43X_GPIO_EXTI_IRQHandler(3);
     rt_interrupt_leave();
 }
+
 void EXTI4_IRQHandler(void)
 {
     rt_interrupt_enter();
     N32G43X_GPIO_EXTI_IRQHandler(4);
     rt_interrupt_leave();
 }
+
 void EXTI9_5_IRQHandler(void)
 {
     rt_interrupt_enter();
@@ -582,6 +583,7 @@ void EXTI9_5_IRQHandler(void)
     N32G43X_GPIO_EXTI_IRQHandler(9);
     rt_interrupt_leave();
 }
+
 void EXTI15_10_IRQHandler(void)
 {
     rt_interrupt_enter();
@@ -623,9 +625,9 @@ void GPIOInit(GPIO_Module* GPIOx, GPIO_ModeType mode, GPIO_PuPdType pupd, uint16
     if (Pin <= GPIO_PIN_ALL)
     {
         GPIO_InitStruct(&GPIO_InitStructure);
-        GPIO_InitStructure.Pin          = Pin;
-        GPIO_InitStructure.GPIO_Pull    = pupd;
-        GPIO_InitStructure.GPIO_Mode    = mode;
+        GPIO_InitStructure.Pin            = Pin;
+        GPIO_InitStructure.GPIO_Pull      = pupd;
+        GPIO_InitStructure.GPIO_Mode      = mode;
         GPIO_InitStructure.GPIO_Alternate = remap;
         GPIO_InitPeripheral(GPIOx, &GPIO_InitStructure);
     }

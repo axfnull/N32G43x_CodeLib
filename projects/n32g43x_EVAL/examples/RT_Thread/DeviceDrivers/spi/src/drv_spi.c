@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,16 +28,15 @@
 /**
  * @file drv_spi.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 
 #include "drv_spi.h"
 #include "n32g43x.h"
 #include "n32g43x_spi.h"
 #include <rtthread.h>
-#include "rt_config.h"
 #include "drv_gpio.h"
 
 #if defined(RT_USING_SPI) && defined(RT_USING_PIN)
@@ -205,7 +204,7 @@ static rt_uint32_t xfer(struct rt_spi_device* device, struct rt_spi_message* mes
             const rt_uint8_t * send_ptr = message->send_buf;
             rt_uint8_t * recv_ptr = message->recv_buf;
             rt_uint32_t size = message->length;
-                     
+
             while(size--)
             {
                 rt_uint8_t data = 0xA5;
@@ -231,7 +230,7 @@ static rt_uint32_t xfer(struct rt_spi_device* device, struct rt_spi_message* mes
                 {
                     *recv_ptr++ = data;
                 }
-            }            
+            }
         }
         else if(config->data_width <= 16)
         {
@@ -293,14 +292,14 @@ int rt_hw_spi_init(void)
 
     result = rt_spi_bus_register(&spi_bus1, "spi1", &spi_ops);
     
-    RCC_EnableAPB2PeriphClk(RCC_APB2_PERIPH_SPI1 | RCC_APB2_PERIPH_AFIO, ENABLE);    
+    RCC_EnableAPB2PeriphClk(RCC_APB2_PERIPH_SPI1 | RCC_APB2_PERIPH_AFIO, ENABLE);   
     /* SPI1_SCK(PA5), SPI1_MISO(PA6) and SPI1_MOSI(PA7) GPIO pin configuration */
     GPIOInit(SPI1_SCK_GPIO_PORT, GPIO_Mode_AF_PP, GPIO_No_Pull, SPI1_SCK_PIN, GPIO_AF0_SPI1);
     GPIOInit(SPI1_MOSI_GPIO_PORT, GPIO_Mode_AF_PP, GPIO_No_Pull, SPI1_MOSI_PIN, GPIO_AF0_SPI1);
-    GPIOInit(SPI1_MISO_GPIO_PORT, GPIO_Mode_Input, GPIO_No_Pull, SPI1_MISO_PIN, GPIO_AF0_SPI1);    
+    GPIOInit(SPI1_MISO_GPIO_PORT, GPIO_Mode_Input, GPIO_No_Pull, SPI1_MISO_PIN, GPIO_AF0_SPI1);
         
-#endif  /* RT_USING_SPI1 */
-    
+#endif
+	
 #ifdef RT_USING_SPI2
     static struct rt_spi_bus spi_bus2;
     spi_bus2.parent.user_data = (void *)SPI2;
@@ -313,7 +312,7 @@ int rt_hw_spi_init(void)
     GPIOInit(SPI2_MOSI_GPIO_PORT, GPIO_Mode_AF_PP, GPIO_No_Pull, SPI2_MOSI_PIN, GPIO_AF0_SPI2);
     GPIOInit(SPI2_MISO_GPIO_PORT, GPIO_Mode_Input, GPIO_No_Pull, SPI2_MISO_PIN, GPIO_AF0_SPI2); 
     
-#endif  /* RT_USING_SPI2 */
+#endif
 
     return result;
 }

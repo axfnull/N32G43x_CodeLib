@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,13 +28,12 @@
 /**
  * @file drv_dac.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 
 #include <rtthread.h>
-#include <rt_config.h>
 #include "n32g43x_dac.h"
 #include "n32g43x.h"
 #include "dac.h"
@@ -52,7 +51,6 @@ static struct n32g43x_dac_config dac_config[] =
         "dac",
     },
 #endif
-    
 };
 
 
@@ -64,21 +62,19 @@ static void n32g43x_dac_init(struct n32g43x_dac_config *config)
 
     /* DAC Periph clock enable */
     RCC_EnableAPB1PeriphClk(RCC_APB1_PERIPH_DAC, ENABLE);
-    /* DAC channel1 Configuration */
+    /* DAC channel Configuration */
     DAC_InitStructure.Trigger          = DAC_TRG_SOFTWARE;
     DAC_InitStructure.WaveGen          = DAC_WAVEGEN_NOISE;
     DAC_InitStructure.LfsrUnMaskTriAmp = DAC_UNMASK_LFSRBIT0;
     DAC_InitStructure.BufferOutput     = DAC_BUFFOUTPUT_ENABLE;
     DAC_Init(&DAC_InitStructure);
 
-    /* Enable DAC Channel1: Once the DAC channel1 is enabled, PA.04 is
+    /* Enable DAC Channel1: Once the DAC channel1 is enabled, PA4 is
        automatically connected to the DAC converter. */
     DAC_Enable(ENABLE);
 
-    /* Set DAC Channel1 DHR12L register */
+    /* Set DAC Channel1 DR12CH register */
     DAC_SetChData(DAC_ALIGN_R_12BIT, 4094);
-
-
 }
 
 static rt_err_t n32g43x_dac_enabled(struct rt_dac_device *device, rt_uint32_t channel)
@@ -104,13 +100,16 @@ static rt_err_t n32g43x_set_dac_value(struct rt_dac_device *device, rt_uint32_t 
     RT_ASSERT(device != RT_NULL);    
     rt_uint16_t set_value = 0;
     set_value = (rt_uint16_t)*value;
+
     /* Start DAC Channel conversion by software */
     DAC_SoftTrgEnable(ENABLE);
+    
     if(set_value > 4096)
     {
         set_value = 4096;
     }
     DAC_SetChData(DAC_ALIGN_R_12BIT, set_value);
+
     return RT_EOK;
 }
 
@@ -132,10 +131,8 @@ int rt_hw_dac_init(void)
     for (i = 0; i < sizeof(dac_config) / sizeof(dac_config[0]); i++)
     {
         /* dac init */
-
         dac_obj[i].config = &dac_config[i];
-        
-#if defined(RT_USING_DAC)
+#if defined(RT_USING_DAC)        
         GPIOInit(DAC_GPIO_PORT, GPIO_Mode_Input, GPIO_No_Pull, DAC_PIN, GPIO_NO_AF);
 #endif
         

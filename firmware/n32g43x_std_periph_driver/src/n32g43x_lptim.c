@@ -1,7 +1,7 @@
 /** ----------------------------------------------------------------------------
  *         Nationz Technology Software Support  -  NATIONZ  -
  * -----------------------------------------------------------------------------
- * Copyright (c) 2019, Nationz Corporation  All rights reserved.
+ * Copyright (c) 2022, Nationz Corporation  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -37,7 +37,7 @@
  * @file     n32g43x_lptim.c
  * @author   
  * @date     
- * @version  v1.0.1
+ * @version  v1.2.0
  * @brief          
  ******************************************************************************/
 
@@ -71,21 +71,6 @@
   * @}
   */
 
-/**
-  * @brief  Get LPTIMx clock source
-  * @rmtoll CCIPR        LPTIMxSEL     RCC_GetLPTIMClockSource
-  * @param  LPTIMx This parameter can be one of the following values:
-  *         @arg @ref RCC_LPTIM1_CLKSOURCE
-  * @retval Returned value can be one of the following values:
-  *         @arg @ref RCC_LPTIM1_CLKSOURCE_PCLK1
-  *         @arg @ref RCC_LPTIM1_CLKSOURCE_LSI
-  *         @arg @ref RCC_LPTIM1_CLKSOURCE_HSI
-  *         @arg @ref RCC_LPTIM1_CLKSOURCE_LSE
-  */
-__STATIC_INLINE uint32_t RCC_GetLPTIMClockSource(uint32_t LPTIMx)
-{
-  return (uint32_t)(READ_BIT(RCC->RDCTRL, LPTIMx));
-}
 /* Private types -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private constants ---------------------------------------------------------*/
@@ -223,63 +208,7 @@ ErrorStatus LPTIM_Init(LPTIM_Module * LPTIMx, LPTIM_InitType* LPTIM_InitStruct)
   */
 void LPTIM_Disable(LPTIM_Module *LPTIMx)
 {
-  RCC_ClocksType rcc_clock;
-  uint32_t tmpclksource = 0;
-  uint32_t tmpIER;
-  uint32_t tmpCFG;
-  uint32_t tmpCMP;
-  uint32_t tmpARR;
-
-  /********** Save LPTIM Config *********/
-  /* Save LPTIM source clock */
-  tmpclksource = RCC_GetLPTIMClockSource(RCC_LPTIM_CLKSOURCE);
-
-
-  /* Save LPTIM configuration registers */
-  tmpIER = LPTIMx->INTEN;
-  tmpCFG = LPTIMx->CFG;
-  tmpCMP = LPTIMx->COMPx;
-  tmpARR = LPTIMx->ARR;
-
-  /************* Reset LPTIM ************/
-  LPTIM_DeInit(LPTIMx);
-
-  /********* Restore LPTIM Config *******/
-  RCC_GetClocksFreqValue(&rcc_clock);
-  LPTIMx->INTEN = 0x18;
-  if ((tmpCMP != 0UL) || (tmpARR != 0UL))
-  {
-    /* Force LPTIM source kernel clock from APB */
-
-    RCC_ConfigLPTIMClk(RCC_LPTIMCLK_SRC_APB1);
-
-    if (tmpCMP != 0UL)
-    {
-      /* Restore CMP and ARR registers (LPTIM should be enabled first) */
-      LPTIMx->CTRL |= LPTIM_CTRL_LPTIMEN;
-      LPTIMx->COMPx = tmpCMP;
-
-      LPTIM_ClearFlag_CMPOK(LPTIMx);
-    }
-
-    if (tmpARR != 0UL)
-    {
-      LPTIMx->CTRL |= LPTIM_CTRL_LPTIMEN;
-      LPTIMx->ARR = tmpARR;
-
-      RCC_GetClocksFreqValue(&rcc_clock);
-
-      LPTIM_ClearFlag_ARROK(LPTIMx);
-    }
-
-    /* Restore LPTIM source kernel clock */
-    RCC_ConfigLPTIMClk(tmpclksource);
-  }
-
-  /* Restore configuration registers (LPTIM should be disabled first) */
-  LPTIMx->CTRL &= ~(LPTIM_CTRL_LPTIMEN);
-  LPTIMx->INTEN = tmpIER;
-  LPTIMx->CFG = tmpCFG;
+    CLEAR_BIT(LPTIMx->CTRL, LPTIM_CTRL_LPTIMEN);
 }
 
 /** @defgroup LPTIM_EF_LPTIM_Configuration LPTIM Configuration

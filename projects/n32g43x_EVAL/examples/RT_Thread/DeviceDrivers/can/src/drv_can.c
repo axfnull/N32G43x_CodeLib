@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file drv_can.c
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 
 #include <rtthread.h>
@@ -38,7 +38,6 @@
 #include <rthw.h>
 
 #include <drv_can.h>
-#include "rt_config.h"
 #include "n32g43x_can.h"
 #include "can.h"
 #include "drv_gpio.h"
@@ -48,11 +47,13 @@
 
 CanRxMessage RxMessage;
 
-static struct n32g43x_can drv_can1 =
+#ifdef RT_USING_CAN
+static struct n32g43x_can drv_can =
 {
     .name = "bxcan",
     .CanHandle.Instance = CAN,
 };
+#endif
 
 static rt_err_t setfilter(struct n32g43x_can *pbxcan, CAN_FilterInitType *pconfig)
 {
@@ -69,7 +70,6 @@ static rt_err_t setfilter(struct n32g43x_can *pbxcan, CAN_FilterInitType *pconfi
     CAN_FilterInitStruct.Filter_Act            = pconfig->Filter_Act;
 
     CAN_InitFilter(&CAN_FilterInitStruct);
-    
 
     return RT_EOK;
 }
@@ -84,46 +84,48 @@ static void bxcan_init(struct rt_can_device *can, struct can_configure *cfg)
     drv_can = (struct n32g43x_can *)can->parent.user_data;
     pbxcan  = drv_can->CanHandle.Instance;
     
-    uint32_t bps ;
-    
     /* CAN register init */
     CAN_DeInit(pbxcan);
     
     /* Struct init*/
     CAN_InitStruct(&CAN_InitStructure);
+    
+    CAN_InitStructure.TTCM          = DISABLE;
+    CAN_InitStructure.ABOM          = DISABLE;
+    CAN_InitStructure.AWKUM         = DISABLE;
+    CAN_InitStructure.NART          = DISABLE;
+    CAN_InitStructure.RFLM          = DISABLE;
+    CAN_InitStructure.TXFP          = ENABLE;
+
     switch(cfg->baud_rate)
     {
         case CAN1MBaud:
-            bps = CAN_BAUDRATE_1M;
+            CAN_InitStructure.RSJW          = CAN_RSJW_1tq;
+            CAN_InitStructure.TBS1          = CAN_TBS1_6tq;
+            CAN_InitStructure.TBS2          = CAN_TBS2_2tq;
+            CAN_InitStructure.BaudRatePrescaler = 3;
             break;
         case CAN500kBaud:
-            bps = CAN_BAUDRATE_500K;
+            CAN_InitStructure.RSJW          = CAN_RSJW_1tq;
+            CAN_InitStructure.TBS1          = CAN_TBS1_6tq;
+            CAN_InitStructure.TBS2          = CAN_TBS2_2tq;
+            CAN_InitStructure.BaudRatePrescaler = 6;
             break;
         case CAN250kBaud:
-            bps = CAN_BAUDRATE_250K;
+            CAN_InitStructure.RSJW          = CAN_RSJW_1tq;
+            CAN_InitStructure.TBS1          = CAN_TBS1_13tq;
+            CAN_InitStructure.TBS2          = CAN_TBS2_4tq;
+            CAN_InitStructure.BaudRatePrescaler = 6;
             break;
         case CAN125kBaud:
-            bps = CAN_BAUDRATE_125K;
+            CAN_InitStructure.RSJW          = CAN_RSJW_1tq;
+            CAN_InitStructure.TBS1          = CAN_TBS1_13tq;
+            CAN_InitStructure.TBS2          = CAN_TBS2_4tq;
+            CAN_InitStructure.BaudRatePrescaler = 12;
             break;
-        case CAN100kBaud:
-            bps = CAN_BAUDRATE_100K;
-            break;
-        case CAN50kBaud:
-            bps = CAN_BAUDRATE_50K;
-            break;
-        case CAN20kBaud:
-            bps = CAN_BAUDRATE_20K;
-            break;
-        case CAN10kBaud:
-            bps = CAN_BAUDRATE_10K;
-            break;
-        
         default:
-            bps = CAN_BAUDRATE_100K;
             break;
     }
-    
-    CAN_InitStructure.BaudRatePrescaler = (uint32_t)(CAN_BTR_CALCULATE / bps);
     
     switch (cfg->mode)
     {
@@ -145,41 +147,22 @@ static void bxcan_init(struct rt_can_device *can, struct can_configure *cfg)
             break;
     }
     
-    CAN_InitStructure.TTCM          = DISABLE;
-    CAN_InitStructure.ABOM          = DISABLE;
-    CAN_InitStructure.AWKUM         = DISABLE;
-    CAN_InitStructure.NART          = DISABLE;
-    CAN_InitStructure.RFLM          = DISABLE;
-    CAN_InitStructure.TXFP          = ENABLE;
-
-    CAN_InitStructure.RSJW          = CAN_RSJW_1tq;
-    CAN_InitStructure.TBS2          = CAN_TBS2_2tq;
-    
-    if(bps == CAN_BAUDRATE_1M)
-    {
-        CAN_InitStructure.TBS1          = CAN_TBS1_7tq;
-    }
-    else
-    {
-        CAN_InitStructure.TBS1          = CAN_TBS1_3tq;
-    }
-    
     /*Initializes the CAN */
     CAN_Init(pbxcan, &CAN_InitStructure);
     
     /* CAN filter init */
     setfilter(drv_can, &drv_can->FilterConfig);
-
 }
 
 #ifdef RT_USING_CAN
 static void bxcan_hw_init(void)
 {
     /* Enable CAN reset state */
+    RCC_EnableAPB1PeriphClk(RCC_APB2_PERIPH_GPIOB, ENABLE);
     RCC_EnableAPB1PeriphClk(RCC_APB1_PERIPH_CAN, ENABLE);
     RCC_EnableAPB2PeriphClk(RCC_APB2_PERIPH_AFIO, ENABLE);
-    GPIOInit(CAN_GPIO_PORT, GPIO_Mode_Input, GPIO_Pull_Up, CAN_GPIO_RX_PIN, GPIO_AF1_CAN);
-    GPIOInit(CAN_GPIO_PORT, GPIO_Mode_AF_PP, GPIO_Pull_Up, CAN_GPIO_TX_PIN, GPIO_AF1_CAN);
+    GPIOInit(CAN_GPIO_PORT, GPIO_Mode_Input, GPIO_Pull_Up, CAN_GPIO_RX_PIN, GPIO_AF5_CAN);
+    GPIOInit(CAN_GPIO_PORT, GPIO_Mode_AF_PP, GPIO_Pull_Up, CAN_GPIO_TX_PIN, GPIO_AF5_CAN);
 }
 #endif
 
@@ -194,7 +177,6 @@ static rt_err_t configure(struct rt_can_device *can, struct can_configure *cfg)
     bxcan_hw_init();  
     bxcan_init(&drv_can->device, &drv_can->device.config);
 #endif
-    
 
     return RT_EOK;
 }
@@ -355,11 +337,7 @@ static rt_err_t control(struct rt_can_device *can, int cmd, void *arg)
         if (argval != CAN1MBaud &&
                 argval != CAN500kBaud &&
                 argval != CAN250kBaud &&
-                argval != CAN125kBaud &&
-                argval != CAN100kBaud &&
-                argval != CAN50kBaud  &&
-                argval != CAN20kBaud  &&
-                argval != CAN10kBaud)
+                argval != CAN125kBaud )
         {
             return -RT_ERROR;
         }
@@ -410,17 +388,18 @@ static int sendmsg(struct rt_can_device *can, const void *buf, rt_uint32_t boxno
 
     if(pmsg->ide)
     {
+        TxMessage.IDE = CAN_ID_EXT;
         TxMessage.ExtId = pmsg->id;
         TxMessage.StdId = 0;
     }
     else
     {
+        TxMessage.IDE = CAN_ID_STD;
         TxMessage.StdId = pmsg->id;
         TxMessage.ExtId = 0;
     }
     
     TxMessage.RTR = pmsg->rtr;
-    TxMessage.IDE = pmsg->ide;
     TxMessage.DLC = pmsg->len;
     for( i=0; i<TxMessage.DLC ;i++)
     {
@@ -475,20 +454,20 @@ void n32g43x_can_irqhandler(void *param)
     if (CAN_GetIntStatus(CANx, CAN_INT_FMP0)) 
     {
         CAN_ReceiveMessage(CANx, CAN_FIFO0, &RxMessage);
-        rt_hw_can_isr(&drv_can1.device, RT_CAN_EVENT_RX_IND);
+        rt_hw_can_isr(&drv_can.device, RT_CAN_EVENT_RX_IND);
         CAN_ClearINTPendingBit(CANx, CAN_INT_FMP0);
         rt_kprintf("\r\nCan int RX happened!\r\n");
     }
     /* send interrupt */
     else if (CAN_GetFlagSTS(CANx, CAN_FLAG_RQCPM0)) 
     {
-       rt_hw_can_isr(&drv_can1.device, RT_CAN_EVENT_TX_DONE | 0 << 8);
+       rt_hw_can_isr(&drv_can.device, RT_CAN_EVENT_TX_DONE | 0 << 8);
        CAN_ClearFlag(CANx, CAN_FLAG_RQCPM0);
     }
     /* data overflow interrupt */
     else if (CAN_GetIntStatus(CANx, CAN_INT_FOV0)) 
     {
-       rt_hw_can_isr(&drv_can1.device, RT_CAN_EVENT_RXOF_IND);
+       rt_hw_can_isr(&drv_can.device, RT_CAN_EVENT_RXOF_IND);
        rt_kprintf("\r\nCan int RX OF happened!\r\n");
     }
 }
@@ -498,7 +477,7 @@ void CAN_TX_IRQHandler(void)
     /* enter interrupt */
     rt_interrupt_enter();
 
-    n32g43x_can_irqhandler(&drv_can1.device);
+    n32g43x_can_irqhandler(&drv_can.device);
     
     /* leave interrupt */
     rt_interrupt_leave();
@@ -509,7 +488,7 @@ void CAN_RX0_IRQHandler(void)
     /* enter interrupt */
     rt_interrupt_enter();
 
-    n32g43x_can_irqhandler(&drv_can1.device);
+    n32g43x_can_irqhandler(&drv_can.device);
     
     /* leave interrupt */
     rt_interrupt_leave();
@@ -541,16 +520,14 @@ int rt_hw_can_init(void)
 #ifdef RT_USING_CAN
     filterConf.Filter_Num = 0;
 
-    drv_can1.FilterConfig = filterConf;
-    drv_can1.device.config = config;
+    drv_can.FilterConfig = filterConf;
+    drv_can.device.config = config;
     /* register CAN device */
-    rt_hw_can_register(&drv_can1.device,
-                       drv_can1.name,
+    rt_hw_can_register(&drv_can.device,
+                       drv_can.name,
                        &canops,
-                       &drv_can1);
+                       &drv_can);
 #endif /* RT_USING_CAN */
-
-
 
     return 0;
 }

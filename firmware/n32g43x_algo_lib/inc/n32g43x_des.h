@@ -28,7 +28,7 @@
 /*****************************************************************************
 * File Name: Dn32g43x_des.h
 * Function: Declaring DES algorithm library API
-* version: V1.1
+* version: V1.2.0
 * Author: zhang.zhenshan
 * date: 2020-4-8
 * ****************************************************************************/

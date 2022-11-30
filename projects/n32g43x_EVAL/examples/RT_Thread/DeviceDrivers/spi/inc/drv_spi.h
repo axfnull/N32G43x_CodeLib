@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2019, Nations Technologies Inc.
+ * Copyright (c) 2022, Nations Technologies Inc.
  *
  * All rights reserved.
  * ****************************************************************************
@@ -28,9 +28,9 @@
 /**
  * @file drv_spi.h
  * @author Nations
- * @version v1.0.0
+ * @version v1.2.0
  *
- * @copyright Copyright (c) 2019, Nations Technologies Inc. All rights reserved.
+ * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
 
 #ifndef N32G43X_SPI_H_INCLUDED
@@ -38,10 +38,9 @@
 
 #include "n32g43x.h"
 #include "n32g43x_spi.h"
-#include "rt_config.h"
+#include "rtconfig.h"
 
 #ifdef RT_USING_SPI1
-
 #define SPI1_SCK_PIN             GPIO_PIN_5 /* PA.05 */
 #define SPI1_SCK_GPIO_PORT       GPIOA      /* GPIOA */
 #define SPI1_SCK_GPIO_CLK        RCC_APB2_PERIPH_GPIOA
@@ -51,14 +50,9 @@
 #define SPI1_MOSI_PIN            GPIO_PIN_7 /* PA.07 */
 #define SPI1_MOSI_GPIO_PORT      GPIOA      /* GPIOA */
 #define SPI1_MOSI_GPIO_CLK       RCC_APB2_PERIPH_GPIOA
-#define SPI1_CS_PIN              GPIO_PIN_4 /* PA.04 */
-#define SPI1_CS_GPIO_PORT        GPIOA      /* GPIOA */
-#define SPI1_CS_GPIO_CLK         RCC_APB2_PERIPH_GPIOA
-
-#endif /* RT_USING_SPI1 */
+#endif  /* RT_USING_SPI1 */
 
 #ifdef RT_USING_SPI2
-
 #define SPI2_SCK_PIN             GPIO_PIN_13 /* PB.13 */
 #define SPI2_SCK_GPIO_PORT       GPIOB      /* GPIOB */
 #define SPI2_SCK_GPIO_CLK        RCC_APB2_PERIPH_GPIOB
@@ -68,11 +62,7 @@
 #define SPI2_MOSI_PIN            GPIO_PIN_15 /* PB.15 */
 #define SPI2_MOSI_GPIO_PORT      GPIOB      /* GPIOB */
 #define SPI2_MOSI_GPIO_CLK       RCC_APB2_PERIPH_GPIOB
-#define SPI2_CS_PIN              GPIO_PIN_12 /* PB.12 */
-#define SPI2_CS_GPIO_PORT        GPIOB      /* GPIOA */
-#define SPI2_CS_GPIO_CLK         RCC_APB2_PERIPH_GPIOB
-
-#endif /* RT_USING_SPI2 */
+#endif  /* RT_USING_SPI2 */
 
 struct w25qxx_spi_cs
 {
@@ -82,4 +72,4 @@ struct w25qxx_spi_cs
 
 int rt_hw_spi_init(void);
 
-#endif // N32G43X_SPI_H_INCLUDED
+#endif // N32G45X_SPI_H_INCLUDED
