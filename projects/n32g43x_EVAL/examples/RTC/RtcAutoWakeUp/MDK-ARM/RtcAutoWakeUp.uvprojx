@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>N32G435RB</Device>
           <Vendor>Nationstech</Vendor>
-          <PackID>Nationstech.N32G43x_DFP.0.9.1</PackID>
+          <PackID>Nationstech.N32G43x_DFP.0.9.3</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x8000) IROM(0x08000000,0x20000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -536,6 +536,21 @@
               <FileName>User_RTC_Config.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\User_RTC_Config.c</FilePath>
+            </File>
+            <File>
+              <FileName>User_Sysclock_Config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\User_Sysclock_Config.c</FilePath>
+            </File>
+            <File>
+              <FileName>User_RTCBKP_Config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\User_RTCBKP_Config.c</FilePath>
+            </File>
+            <File>
+              <FileName>User_Delay_Config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\User_Delay_Config.c</FilePath>
             </File>
           </Files>
         </Group>

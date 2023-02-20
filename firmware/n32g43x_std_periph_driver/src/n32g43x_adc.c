@@ -28,7 +28,7 @@
 /**
  * @file n32g43x_adc.c
  * @author Nations
- * @version V1.2.0
+ * @version V1.2.1
  *
  * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
@@ -289,6 +289,7 @@ void ADC_InitStruct(ADC_InitType* ADC_InitStruct)
  */
 void ADC_Enable(ADC_Module* ADCx, FunctionalState Cmd)
 {
+    uint32_t i=0;
     /* Check the parameters */
     assert_param(IsAdcModule(ADCx));
     assert_param(IS_FUNCTIONAL_STATE(Cmd));
@@ -302,6 +303,8 @@ void ADC_Enable(ADC_Module* ADCx, FunctionalState Cmd)
         /* Disable the selected ADC peripheral */
         ADCx->CTRL2 &= CTRL2_AD_ON_RESET;
     }
+    /*Wait for ADC to filter burr after a delay of more than 8us */
+    for(i=0;i<0x1FF;i++);
 }
 
 /**
@@ -366,11 +369,14 @@ void ADC_ConfigInt(ADC_Module* ADCx, uint16_t ADC_IT, FunctionalState Cmd)
  */
 void ADC_StartCalibration(ADC_Module* ADCx)
 {
+    uint32_t i =0;
     /* Check the parameters */
     assert_param(IsAdcModule(ADCx));
     /* Enable the selected ADC calibration process */
     if(ADCx->CALFACT==0)
         ADCx->CTRL2 |= CTRL2_CAL_SET;
+    /*Wait for ADC to filter burr after a delay of more than 8us */
+    for(i=0;i<0x1FF;i++);
 }
 
 /**

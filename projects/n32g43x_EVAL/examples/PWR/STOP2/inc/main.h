@@ -28,7 +28,7 @@
 /**
  * @file main.h
  * @author Nations 
- * @version v1.2.0
+ * @version V1.2.1
  *
  * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
@@ -39,6 +39,11 @@
 extern "C" {
 #endif
 
+#define SRAM1_START_ADDR   0x20000000
+#define SRAM1_SIZE         (1024*24)
+
+#define SRAM2_START_ADDR   0x20006000
+#define SRAM2_SIZE         (1024*8)
 
 #ifdef __cplusplus
 }

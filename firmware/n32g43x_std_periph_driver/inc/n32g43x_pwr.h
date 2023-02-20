@@ -28,7 +28,7 @@
 /**
  * @file n32g43x_pwr.h
  * @author Nations 
- * @version v1.2.0
+ * @version V1.2.1
  *
  * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
@@ -176,11 +176,13 @@ typedef enum
 /**
  * @}
  */
+#define LPRUN_SWITCH_ADDR   (__IO unsigned*)(0x40007000)
 #define LPRUN_SRAM_ADDR   (__IO unsigned*)(0x40001800 + 0x20)
 #define CLERR_BIT25  0xfdffffff //bit25  
 #define _SetLprunSramVoltage(vale) do{(*LPRUN_SRAM_ADDR) &= CLERR_BIT25;(*LPRUN_SRAM_ADDR) |= (uint32_t)(vale <<25);}while(0) //0:0.9V 1:1.1V  
 #define _SetBandGapMode(vale) do{PWR->CTRL3 &= (~PWR_CTRL3_BGDTLPR);PWR->CTRL3 |= (uint32_t)(vale <<8);}while(0) //0:always on 1:duty on  
 #define _SetPvdBorMode(vale) do{PWR->CTRL3 &= (~PWR_CTRL3_PBDTLPR);PWR->CTRL3 |= (uint32_t)(vale <<16);}while(0) //0:normal mode 1:standby mode  
+#define _SetLprunSwitch(vale) do{(*LPRUN_SWITCH_ADDR) &= (~0x0600);(*LPRUN_SWITCH_ADDR) |= (uint32_t)(vale <<9);}while(0)  
 /** @addtogroup PWR_Exported_Functions
  * @{
  */

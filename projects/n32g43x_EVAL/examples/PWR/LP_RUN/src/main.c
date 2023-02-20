@@ -28,7 +28,7 @@
 /**
  * @file main.c
  * @author Nations 
- * @version v1.2.0
+ * @version V1.2.1
  *
  * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
@@ -61,7 +61,6 @@ void delay(vu32 nCount)
  */
 int main(void)
 {
-    //RCC_ClocksType temp;
     /*!< At this stage the microcontroller clock setting is already configured,
          this is done through SystemInit() function which is called from startup
          file (startup_n32g43x_xx.s) before to branch to application main.
@@ -80,14 +79,16 @@ int main(void)
     {
        /* Insert a long delay */
        delay(50);
-       LEDBlink(LED1_PORT,LED1_PIN);
+       log_info("\r\n MCU Prepare Enter Low Power Run Mode Sysclock From MSI(4MHz)\r\n");
        /* Request to enter LP RUN mode*/
        PWR_EnterLowPowerRunMode(); 
        delay(50);
-       LEDBlink(LED1_PORT,LED1_PIN);
        /* Exit LP RUN mode*/
        PWR_ExitLowPowerRunMode();
-       SetSysClockToPLL(48000000,SYSCLK_PLLSRC_HSI);
+       SetSysClockToPLL(SystemCoreClock,SYSCLK_PLLSRC_HSE_PLLDIV2);
+       log_init(); 
+       log_info("\r\n MCU Run In Run Mode Sysclock From PLL(108MHz)\r\n");
+       LEDBlink(LED1_PORT,LED1_PIN);
     }
 }
 

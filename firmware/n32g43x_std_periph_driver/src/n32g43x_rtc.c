@@ -28,7 +28,7 @@
 /**
  * @file n32g43x_rtc.c
  * @author Nations
- * @version v1.2.0
+ * @version V1.2.1
  *
  * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
@@ -511,8 +511,7 @@ ErrorStatus RTC_ConfigTime(uint32_t RTC_Format, RTC_TimeType* RTC_TimeStruct)
     {
         if ((RTC->CTRL & RTC_CTRL_HFMT) != (uint32_t)RESET)
         {
-            tmpregister = RTC_Bcd2ToByte(RTC_TimeStruct->Hours);
-            assert_param(IS_RTC_12HOUR(tmpregister));
+            assert_param(IS_RTC_12HOUR(RTC_Bcd2ToByte(RTC_TimeStruct->Hours)));
             assert_param(IS_RTC_H12(RTC_TimeStruct->H12));
         }
         else
@@ -571,7 +570,10 @@ ErrorStatus RTC_ConfigTime(uint32_t RTC_Format, RTC_TimeType* RTC_TimeStruct)
     RTC->WRP = 0xFF;
     /* Waits until the RTC Time and Date registers 
     (RTC_TSH and RTC_DATE) are  synchronized with RTC APB clock. */
-    status=RTC_WaitForSynchro();
+    if(status!=ERROR)
+    {
+        status=RTC_WaitForSynchro();
+    }
     return status;
 }
 
@@ -730,7 +732,10 @@ ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateType* RTC_DateStruct)
     RTC->WRP = 0xFF;
     /* Waits until the RTC Time and Date registers 
     (RTC_TSH and RTC_DATE) are  synchronized with RTC APB clock. */
-    status=RTC_WaitForSynchro();
+    if(ERROR!=status)
+    {
+       status=RTC_WaitForSynchro();
+    }
     return status;
 }
 

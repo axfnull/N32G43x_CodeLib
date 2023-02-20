@@ -36,7 +36,7 @@
  * @file     n32g43x_lptim.h
  * @author   
  * @date     
- * @version  v1.2.0
+ * @version  V1.2.1
  * @brief    
  ******************************************************************************/
 #ifndef __n32g43x_LPTIM_H

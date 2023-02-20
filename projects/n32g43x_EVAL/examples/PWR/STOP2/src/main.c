@@ -28,7 +28,7 @@
 /**
  * @file main.c
  * @author Nations 
- * @version v1.2.0
+ * @version V1.2.1
  *
  * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
@@ -40,6 +40,7 @@
 #include "User_Key_Config.h"
 #include "User_Sysclock_Config.h"
 #include "log.h"
+#include "main.h"
 
 /**
  * @brief  Delay function.
@@ -52,6 +53,21 @@ void delay(vu32 nCount)
     {
     }
 }
+
+
+/**
+ * @brief  SRAM2 Reset function.
+ */
+void SRAM2_Reset(void)
+{
+    uint8_t* p_sram2=(uint8_t*)SRAM2_START_ADDR;
+    uint32_t i =0;
+    for(i=0;i<SRAM2_SIZE;i++)
+    {
+        *(p_sram2+i) = 0;
+    }
+}
+
 
 /**
  * @brief  Main program.
@@ -66,8 +82,6 @@ int main(void)
     */
     log_init();
     log_info("\r\n MCU Reset! \r\n");
-    /* config system clock */
-    SetSysClockToPLL(64000000,RCC_SYSCLK_DIV4);
     /* Enable PWR Clock */
     RCC_EnableAPB1PeriphClk(RCC_APB1_PERIPH_PWR, ENABLE);
     LEDInit(LED1_PORT,LED1_PIN);
@@ -75,16 +89,23 @@ int main(void)
     /* Initialize Key button Interrupt to wakeUp stop */
     KeyInputExtiInit(KEY_INPUT_PORT, KEY_INPUT_PIN);
     /*  Enable the DBG_STOP to keep debug in low power  */
+    DBG_ConfigPeriph(DBG_STOP, ENABLE);
     while (1)
     {
        /* Insert a long delay */
-       delay(50);
+       delay(200);
+       log_info("\r\n MCU Prepare Enter Stop2 Mode Core Stop Run \r\n");
        /* when system clock div4 is selected,advise that the system clock configure as RCC_SYSCLK_DIV1,
           when exit the stop2,system clock can configure back as RCC_SYSCLK_DIV4 */
-       SetSysClockToPLL(64000000,RCC_SYSCLK_DIV1);
-       /* Request to enter STOP2 mode*/
+       SetSysClockToPLL(SystemCoreClock,SYSCLK_PLLSRC_HSEDIV2);
+       /* Request to enter STOP2 mode,and config SRAM1 retain*/
        PWR_EnterSTOP2Mode(PWR_STOPENTRY_WFI,PWR_CTRL3_RAM1RET); 
-       SetSysClockToPLL(64000000,RCC_SYSCLK_DIV4);
+       /*Reset SRAM2 when wake up from stop2 mode*/
+       SRAM2_Reset();
+       /*multiply System Clock Frequency*/
+       SetSysClockToPLL(SystemCoreClock,SYSCLK_PLLSRC_HSE_PLLDIV2);
+       log_init();
+       log_info("\r\n MCU Run In Run Mode Sysclock From PLL(108MHz) \r\n");  
        LEDBlink(LED1_PORT,LED1_PIN);
     }
 }

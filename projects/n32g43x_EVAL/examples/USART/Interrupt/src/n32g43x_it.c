@@ -28,7 +28,7 @@
 /**
  * @file n32g43x_it.c
  * @author Nations
- * @version v1.2.0
+ * @version V1.2.1
  *
  * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
@@ -151,7 +151,6 @@ void USARTy_IRQHandler(void)
             USART_ConfigInt(USARTy, USART_INT_RXDNE, DISABLE);
         }
     }
-
     if (USART_GetIntStatus(USARTy, USART_INT_TXDE) != RESET)
     {
         /* Write one byte to the transmit data register */
@@ -162,6 +161,13 @@ void USARTy_IRQHandler(void)
             /* Disable the USARTy Transmit interrupt */
             USART_ConfigInt(USARTy, USART_INT_TXDE, DISABLE);
         }
+    }
+    if(USART_GetIntStatus(USARTy, USART_INT_OREF) != RESET)
+    {
+        /*Read the STS register first,and the read the DAT 
+        register to clear the overflow interrupt*/
+        (void)USARTy->STS;
+        (void)USARTy->DAT;
     }
 }
 
@@ -192,6 +198,13 @@ void USARTz_IRQHandler(void)
             /* Disable the USARTz Transmit interrupt */
             USART_ConfigInt(USARTz, USART_INT_TXDE, DISABLE);
         }
+    }
+    if(USART_GetIntStatus(USARTz, USART_INT_OREF) != RESET)
+    {
+        /*Read the STS register first,and the read the DAT 
+        register to clear the overflow interrupt*/
+        (void)USARTz->STS;
+        (void)USARTz->DAT;
     }
 }
 

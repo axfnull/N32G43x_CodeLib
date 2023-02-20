@@ -28,7 +28,7 @@
 /**
  * @file n32g43x_tim.h
  * @author Nations 
- * @version v1.2.0
+ * @version V1.2.1
  *
  * @copyright Copyright (c) 2022, Nations Technologies Inc. All rights reserved.
  */
@@ -573,7 +573,7 @@ typedef struct
 #define IsTimDmaBase(BASE)                                                                                             \
     (((BASE) == TIM_DMABASE_CTRL1) || ((BASE) == TIM_DMABASE_CTRL2) || ((BASE) == TIM_DMABASE_SMCTRL)                  \
      || ((BASE) == TIM_DMABASE_DMAINTEN) || ((BASE) == TIM_DMABASE_STS) || ((BASE) == TIM_DMABASE_EVTGEN)              \
-     || ((BASE) == TIM_DMABASE_CAPCMPMOD1) || ((BASE) == TIM_DMABASE_CAPCMPMOD2) || ((BASE) == TIM_DMABASE_CAPCMPMOD3) \
+     || ((BASE) == TIM_DMABASE_CAPCMPMOD1) || ((BASE) == TIM_DMABASE_CAPCMPMOD2)                                       \
      || ((BASE) == TIM_DMABASE_CAPCMPEN) || ((BASE) == TIM_DMABASE_CNT) || ((BASE) == TIM_DMABASE_PSC)                 \
      || ((BASE) == TIM_DMABASE_AR) || ((BASE) == TIM_DMABASE_REPCNT) || ((BASE) == TIM_DMABASE_CAPCMPDAT1)             \
      || ((BASE) == TIM_DMABASE_CAPCMPDAT2) || ((BASE) == TIM_DMABASE_CAPCMPDAT3) || ((BASE) == TIM_DMABASE_CAPCMPDAT4) \
